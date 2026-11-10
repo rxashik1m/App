@@ -1,0 +1,47 @@
+{
+  "entities": {
+    "User": {
+      "path": "users/{userId}",
+      "fields": {
+        "userId": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoUrl": { "type": "string" },
+        "tier": { "type": "string" },
+        "buildCredits": { "type": "number" },
+        "turboCredits": { "type": "number" },
+        "createdAt": { "type": "timestamp" },
+        "updatedAt": { "type": "timestamp" }
+      },
+      "required": ["userId", "email", "tier", "buildCredits", "turboCredits"]
+    },
+    "UserBuild": {
+      "path": "users/{userId}/builds/{buildId}",
+      "fields": {
+        "buildId": { "type": "string" },
+        "userId": { "type": "string" },
+        "appName": { "type": "string" },
+        "packageId": { "type": "string" },
+        "projectType": { "type": "string" },
+        "pipelineType": { "type": "string" },
+        "status": { "type": "string" },
+        "apkSizeMb": { "type": "number" },
+        "sha256Checksum": { "type": "string" },
+        "createdAt": { "type": "timestamp" },
+        "updatedAt": { "type": "timestamp" }
+      },
+      "required": ["buildId", "userId", "appName", "packageId", "status"]
+    },
+    "AdReward": {
+      "path": "users/{userId}/ad_rewards/{rewardId}",
+      "fields": {
+        "rewardId": { "type": "string" },
+        "userId": { "type": "string" },
+        "rewardType": { "type": "string" },
+        "adTitle": { "type": "string" },
+        "claimedAt": { "type": "timestamp" }
+      },
+      "required": ["rewardId", "userId", "rewardType", "adTitle"]
+    }
+  }
+}

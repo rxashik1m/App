@@ -1,0 +1,64 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null && request.auth.uid != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidUser(data, userId) {
+      return data.userId == userId &&
+             data.email is string &&
+             data.tier in ['Free Developer', 'Pro Studio', 'Enterprise'] &&
+             data.buildCredits is number &&
+             data.buildCredits >= 0 &&
+             data.turboCredits is number &&
+             data.turboCredits >= 0;
+    }
+
+    function isValidBuild(data, userId) {
+      return data.userId == userId &&
+             data.buildId is string &&
+             data.appName is string &&
+             data.packageId is string &&
+             data.status in ['IDLE', 'UPLOADING', 'SCANNING', 'PREPARING', 'INSTALLING_DEPENDENCIES', 'BUILDING', 'SIGNING', 'COMPLETED', 'FAILED', 'EXPIRED'];
+    }
+
+    function isValidReward(data, userId) {
+      return data.userId == userId &&
+             data.rewardId is string &&
+             data.rewardType is string &&
+             data.adTitle is string;
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(request.resource.data, userId);
+      allow update: if isOwner(userId) && isValidUser(request.resource.data, userId);
+      allow delete: if isOwner(userId);
+
+      match /builds/{buildId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidBuild(request.resource.data, userId);
+        allow update: if isOwner(userId) && isValidBuild(request.resource.data, userId);
+        allow delete: if isOwner(userId);
+      }
+
+      match /ad_rewards/{rewardId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidReward(request.resource.data, userId);
+        allow update: if false;
+        allow delete: if isOwner(userId);
+      }
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

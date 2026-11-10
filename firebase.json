@@ -1,0 +1,8 @@
+{
+  "firestore": [
+    {
+      "database": "ai-studio-android-appforge-9707ee52-cfa8-428a-90e2-af813d44c0a4",
+      "rules": "firestore.rules"
+    }
+  ]
+}
